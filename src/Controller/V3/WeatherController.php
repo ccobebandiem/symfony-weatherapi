@@ -18,13 +18,45 @@ class WeatherController
     {
         $data = [];
 
-        $url = 'https://api.weatherapi.com/v1/forecast.json?key=7a1209ad53ca417ab7564558202212&q=London&days=2';
+        $cities = ['Ho Chi Minh', 'London', 'HaNoi', 'Vinh', 'Da Nang'];
+
+        foreach ($cities as $city) {
+            $city        = str_replace(' ', '%20', $city);
+            $cityWeather = $this->getWeather($city);
+
+            if ($cityWeather) {
+                $data[] = $cityWeather;
+            }
+        }
+
+        $response = new Response(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @param string $city
+     * @return array
+     */
+    public function getWeather(string $city)
+    {
+        $data = [];
+
+        $url = "https://api.weatherapi.com/v1/forecast.json?key=".getenv('API_KEY')."&q=$city&days=2";
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+
         $responseData = json_decode(curl_exec($curl));
+
         curl_close($curl);
+
+        if (isset($responseData->error)) {
+            return $data;
+        }
 
         $cityName        = $responseData->location->name;
         $forecastWeather = $responseData->forecast->forecastday;
@@ -37,9 +69,6 @@ class WeatherController
 
         $data[] = $row;
 
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return $data;
     }
 }
