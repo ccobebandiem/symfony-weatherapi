@@ -13,11 +13,16 @@ class CitiesWeatherCommand extends Command
 {
     protected static $defaultName = 'app:cities-weather';
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $weather = new WeatherController();
 
-        $output->writeln($weather->index()->getContent());
+        $output->writeln(json_decode($weather->index()->getContent()));
 
         return Command::SUCCESS;
     }

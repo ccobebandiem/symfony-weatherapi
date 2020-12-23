@@ -18,10 +18,9 @@ class WeatherController
     {
         $data = [];
 
-        $cities = ['Ho Chi Minh', 'London', 'HaNoi', 'Vinh', 'Da Nang'];
+        $citiesLatLong = [ '17.82,105.9', '51.52,-0.11', '21.03,105.85', '18.67,105.67', '17.82,105.9'];
 
-        foreach ($cities as $city) {
-            $city        = str_replace(' ', '%20', $city);
+        foreach ($citiesLatLong as $city) {
             $cityWeather = $this->getWeather($city);
 
             if ($cityWeather) {
@@ -37,11 +36,11 @@ class WeatherController
 
     /**
      * @param string $city
-     * @return array
+     * @return string
      */
-    public function getWeather(string $city)
+    public function getWeather(string $city): string
     {
-        $data = [];
+        $data = '';
 
         $url = "https://api.weatherapi.com/v1/forecast.json?key=".getenv('API_KEY')."&q=$city&days=2";
 
@@ -65,9 +64,7 @@ class WeatherController
         $toDay    = $forecastWeather[0]->day->condition->text;
         $tomorrow = $forecastWeather[1]->day->condition->text;
 
-        $row = 'Processed city ' . '' . $cityName . ' | ' . $toDay . ' - ' . $tomorrow;
-
-        $data[] = $row;
+        $data = 'Processed city ' . '' . $cityName . ' | ' . $toDay . ' - ' . $tomorrow;
 
         return $data;
     }
