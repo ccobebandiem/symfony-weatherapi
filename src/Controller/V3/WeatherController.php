@@ -2,6 +2,7 @@
 
 namespace App\Controller\V3;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,11 +15,11 @@ class WeatherController
     /**
      * @Route("/test", name="api_weather_city", methods={"GET"})
      */
-    public function index(): Response
+    public function index(): JsonResponse
     {
         $data = [];
 
-        $citiesLatLong = [ '17.82,105.9', '51.52,-0.11', '21.03,105.85', '18.67,105.67', '17.82,105.9'];
+        $citiesLatLong = $this->getCitiesLatLong();
 
         foreach ($citiesLatLong as $city) {
             $cityWeather = $this->getWeather($city);
@@ -28,10 +29,7 @@ class WeatherController
             }
         }
 
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return new JsonResponse($data);
     }
 
     /**
@@ -42,7 +40,7 @@ class WeatherController
     {
         $data = '';
 
-        $url = "https://api.weatherapi.com/v1/forecast.json?key=".getenv('API_KEY')."&q=$city&days=2";
+        $url = "https://api.weatherapi.com/v1/forecast.json?key=".getenv('API_WEATHER_KEY')."&q=$city&days=2";
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -65,6 +63,35 @@ class WeatherController
         $tomorrow = $forecastWeather[1]->day->condition->text;
 
         $data = 'Processed city ' . '' . $cityName . ' | ' . $toDay . ' - ' . $tomorrow;
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCitiesLatLong(): array
+    {
+        $data = [];
+
+        $url = "https://api.musement.com/api/v3/cities?offset=0&limit=10&prioritized_country=10&prioritized_country_cities_limit=10&sort_by=weight&without_events=yes";
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+
+        $responseData = json_decode(curl_exec($curl));
+
+        curl_close($curl);
+
+        if (is_null($responseData)) {
+            return $data;
+        }
+
+        foreach ($responseData as $item) {
+            $data[] = (string)($item->latitude . ',' . $item->longitude);
+        }
 
         return $data;
     }
