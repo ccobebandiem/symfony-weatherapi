@@ -34,22 +34,14 @@ class WeatherController
 
     /**
      * @param string $city
+     *
      * @return string
      */
     public function getWeather(string $city): string
     {
         $data = '';
 
-        $url = "https://api.weatherapi.com/v1/forecast.json?key=".getenv('API_WEATHER_KEY')."&q=$city&days=2";
-
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-
-        $responseData = json_decode(curl_exec($curl));
-
-        curl_close($curl);
+        $responseData = $this->getWeatherFromWeatherAPI($city);
 
         if (isset($responseData->error)) {
             return $data;
@@ -74,18 +66,9 @@ class WeatherController
     {
         $data = [];
 
-        $url = "https://api.musement.com/api/v3/cities?offset=0&limit=10&prioritized_country=10&prioritized_country_cities_limit=10&sort_by=weight&without_events=yes";
+        $responseData = $this->getCitiesFromMusementAPI();
 
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-
-        $responseData = json_decode(curl_exec($curl));
-
-        curl_close($curl);
-
-        if (is_null($responseData)) {
+        if (isset($responseData->error)) {
             return $data;
         }
 
@@ -94,5 +77,44 @@ class WeatherController
         }
 
         return $data;
+    }
+
+    /**
+     * @param string $city
+     *
+     * @return mixed
+     */
+    public function getWeatherFromWeatherAPI(string $city)
+    {
+        $url = getenv('API_WEATHER');
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, 'key=' . getenv('API_WEATHER_KEY') . "&q=$city&days=2");
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $responseData = json_decode(curl_exec($curl));
+
+        curl_close($curl);
+
+        return $responseData;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCitiesFromMusementAPI()
+    {
+        $url = getenv('API_MUSEMENT') . "cities?offset=0&limit=10&prioritized_country=10&prioritized_country_cities_limit=10&sort_by=weight&without_events=yes";
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $responseData = json_decode(curl_exec($curl));
+
+        curl_close($curl);
+
+        return $responseData;
     }
 }
