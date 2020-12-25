@@ -3,21 +3,46 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\V3\WeatherController;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class WeatherControllerTest extends WebTestCase
 {
-    public function testGetWeather()
+    public function testIndexFunctionCase001()
     {
-        $weather = new WeatherController();
+        $client = static::createClient();
 
-        $this->assertNotNull($weather->index());
-        $this->assertIsString($weather->index()->getContent());
-        $this->assertStringContainsString('London', $weather->getWeather('London'));
-        $this->assertStringContainsString('London', $weather->getWeather('51.52,-0.11'));
-        $this->assertTrue($weather->getWeather('') === '');
-        $this->assertStringNotContainsString('Ha Noi', $weather->getWeather('London'));
-        $this->assertStringNotContainsString('Ha Noi', $weather->getWeather('51.52,-0.11'));
+        $client->request('GET', '/api/v3/test');
+
+        $this->assertCount(10, json_decode($client->getResponse()->getContent(), true));
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testIndexFunctionCase002()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/api/v3/test/5');
+
+        $this->assertCount(5, json_decode($client->getResponse()->getContent(), true));
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testIndexFunctionCase003()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/api/v3/test/0');
+
+        $this->assertEquals([], json_decode($client->getResponse()->getContent(), true));
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testIndexFunctionCase004()
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/api/v3/test/test');
+
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
     }
 }
