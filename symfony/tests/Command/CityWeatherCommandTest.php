@@ -13,7 +13,7 @@ class CityWeatherCommandTest extends KernelTestCase
         $kernel      = static::createKernel();
         $application = new Application($kernel);
 
-        $command       = $application->find('app:city-weather');
+        $command       = $application->find('app:get-city-weather');
         $commandTester = new CommandTester($command);
         $commandTester->execute([]);
 

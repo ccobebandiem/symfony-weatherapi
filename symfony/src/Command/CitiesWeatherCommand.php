@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CitiesWeatherCommand extends Command
 {
-    protected static $defaultName = 'app:city-weather';
+    protected static $defaultName = 'app:get-city-weather';
 
     /**
      * @var WeatherHelper
