@@ -2,12 +2,6 @@ controllers:
     resource: ../../src/Controller/
     type: annotation
 
-v3_controllers:
-    resource: ../../src/Controller/V3/
-    type: annotation
-    prefix: '/api/v3'
-    name_prefix: 'v3_'
-
 kernel:
     resource: ../../src/Kernel.php
     type: annotation

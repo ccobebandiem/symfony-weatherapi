@@ -20,15 +20,16 @@ class WeatherHelper
     /**
      * @param string $city
      *
-     * @return string
+     * @return array
      */
-    public function getWeather(string $city): string
+    public function getWeather(string $city): array
     {
-        $data = '';
+
+        $data = [];
 
         $responseData = $this->getWeatherFromWeatherAPI($city);
 
-        if ($responseData->getStatusCode() !== 200) {
+        if (!$responseData || $responseData->getStatusCode() !== 200) {
             return $data;
         }
 
@@ -36,12 +37,14 @@ class WeatherHelper
 
         $cityName        = $responseData->location->name;
         $forecastWeather = $responseData->forecast->forecastday;
+        $todayWeather    = count($forecastWeather) > 0 ? $forecastWeather[0]->day->condition->text : null;
+        $tomorrowWeather = count($forecastWeather) > 1 ? $forecastWeather[1]->day->condition->text : null;
 
-
-        $toDay    = $forecastWeather[0]->day->condition->text;
-        $tomorrow = $forecastWeather[1]->day->condition->text;
-
-        $data = 'Processed city ' . '' . $cityName . ' | ' . $toDay . ' - ' . $tomorrow;
+        $data = [
+            'cityName'        => $cityName,
+            'todayWeather'    => $todayWeather,
+            'tomorrowWeather' => $tomorrowWeather
+        ];
 
         return $data;
     }
@@ -55,10 +58,10 @@ class WeatherHelper
     {
         return $this->client->request(
             'GET',
-            getenv('API_WEATHER'),
+            getenv('WEATHER_API_ENDPOINT'),
             [
                 'query' => [
-                    'key'  => getenv('API_WEATHER_KEY'),
+                    'key'  => getenv('WEATHER_API_KEY'),
                     'q'    => $city,
                     'days' => 2,
                 ]

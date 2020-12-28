@@ -6,7 +6,15 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+
+            {% for city in cities %}
+                <p>
+                Processed city {{ city['cityName'] }} | {{ city['todayWeather'] }} - {{ city['tomorrowWeather'] }}
+                </p>
+            {% endfor %}
+
+        {% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
 </html>

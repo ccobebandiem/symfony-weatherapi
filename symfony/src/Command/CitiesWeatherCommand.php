@@ -3,18 +3,15 @@
 
 namespace App\Command;
 
-
-use App\Controller\V3\WeatherController;
 use App\Helper\CityHelper;
 use App\Helper\WeatherHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class CitiesWeatherCommand extends Command
 {
-    protected static $defaultName = 'app:cities-weather';
+    protected static $defaultName = 'app:city-weather';
 
     /**
      * @var WeatherHelper
@@ -42,9 +39,20 @@ class CitiesWeatherCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $weather = new WeatherController();
+        $cities = [];
+        $citiesLatLong = $this->cityHelper->getCitiesLatLong();
 
-        $output->writeln(json_decode($weather->index($this->weatherHelper, $this->cityHelper)->getContent()));
+        foreach ($citiesLatLong as $city) {
+            $cityWeather = $this->weatherHelper->getWeather($city);
+
+            if ($cityWeather) {
+                $cities[] = $cityWeather;
+            }
+        }
+
+        foreach ($cities as $city) {
+            $output->writeln('Processed city ' . $city['cityName'] . ' | ' . $city['todayWeather'] . ' - ' . $city['tomorrowWeather']);
+        }
 
         return Command::SUCCESS;
     }
