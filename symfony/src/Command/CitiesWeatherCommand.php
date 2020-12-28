@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Command;
 
 use App\Helper\CityHelper;
@@ -39,7 +38,7 @@ class CitiesWeatherCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $cities = [];
+        $cities        = [];
         $citiesLatLong = $this->cityHelper->getCitiesLatLong();
 
         foreach ($citiesLatLong as $city) {

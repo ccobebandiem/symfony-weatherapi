@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Tests\Command;
 
 use App\Helper\CityHelper;
@@ -25,9 +24,9 @@ class CityHelperTest extends KernelTestCase
     public function testGetCitiesFromMusementAPI()
     {
         $result = $this->cityHelper->getCitiesLatLong(10);
-        $this->assertEquals(count($result), 10);
+        $this->assertCount(10, $result);
 
         $result = $this->cityHelper->getCitiesLatLong(5);
-        $this->assertEquals(count($result), 5);
+        $this->assertCount(5, $result);
     }
 }

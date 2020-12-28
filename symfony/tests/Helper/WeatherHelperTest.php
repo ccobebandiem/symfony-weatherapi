@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Tests\Command;
 
 use App\Helper\WeatherHelper;
@@ -24,14 +23,14 @@ class WeatherHelperTest extends KernelTestCase
      */
     public function testGetWeather($city)
     {
-        $latLong = $city[0];
+        $latLong  = $city[0];
         $cityName = $city[1];
 
         $result = $this->weatherHelper->getWeather($latLong);
         $this->assertEquals($result['cityName'], $cityName);
     }
 
-    public function providedCities() : array
+    public function providedCities(): array
     {
         return [
             [['48.21,16.367', 'Inner City']],

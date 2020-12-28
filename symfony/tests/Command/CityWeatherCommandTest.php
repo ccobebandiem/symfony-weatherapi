@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Tests\Command;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -19,6 +18,6 @@ class CityWeatherCommandTest extends KernelTestCase
         $commandTester->execute([]);
 
         $output = $commandTester->getDisplay();
-        $this->assertEquals(substr_count($output, 'Processed city'), 10);
+        $this->assertEquals(10, substr_count($output, 'Processed city'));
     }
 }
