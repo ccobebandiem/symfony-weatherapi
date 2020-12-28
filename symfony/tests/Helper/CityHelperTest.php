@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Command;
+namespace App\Tests\Helper;
 
 use App\Helper\CityHelper;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
