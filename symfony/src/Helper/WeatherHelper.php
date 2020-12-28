@@ -24,7 +24,6 @@ class WeatherHelper
      */
     public function getWeather(string $city): array
     {
-
         $data = [];
 
         $responseData = $this->getWeatherFromWeatherAPI($city);

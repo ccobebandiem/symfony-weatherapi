@@ -4,7 +4,6 @@ namespace App\Helper;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-
 class CityHelper
 {
     /**
@@ -18,6 +17,8 @@ class CityHelper
     }
 
     /**
+     * @param int $limit
+     *
      * @return array
      */
     public function getCitiesLatLong($limit = 10): array
